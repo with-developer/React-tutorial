@@ -34,7 +34,10 @@ React는 코드를 간결하고 이해하기 쉽게 만들어 줍니다.
 3. 프로젝트가 생성되면 `/src` 경로에 여러가지 파일이 생성됩니다.   
 해당 파일들을 다 삭제합니다.
 
-4. `src/` 폴더에 `index.css`라는 파일을 생성하고 아래 CSS 코드를 추가해주세요.
+4. `src/` 폴더에 `index.css`라는 파일을 생성하고 아래 CSS 코드를 추가해주세요.   
+<details>
+<summary>코드 접기/펼치기</summary>
+
 ```css
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
@@ -88,8 +91,13 @@ ul {
     margin-left: 20px;
 }
 ```
+</details>
 
 5. `src/` 폴더에 `index.js`라는 파일을 생성하고 아래 JS 코드를 추가해주세요.
+
+<details>
+<summary>코드 접기/펼치기</summary>
+
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -157,6 +165,7 @@ class Game extends React.Component {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game />);
 ```
+</details>
 
 6. `npm start` 명령을 실행하고 브라우저에서 `http://localhost:3000`를 열면 비어있는 틱택토 필드를 확인할 수 있습니다.
 
