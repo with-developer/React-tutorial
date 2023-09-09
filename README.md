@@ -2,6 +2,7 @@
 풀스택 개발자가 되기 위한 프로젝트   
 저는 여태 Frontend는 `HTML + Javascript(JQuery) + CSS(Bootstrap 5.0)`를 사용해왔습니다.     
 이 프로젝트는 React라는 새로운 Frontend Framework를 이해하기 위한 용도로 시작되었습니다.
+original ref: https://ko.legacy.reactjs.org/tutorial/tutorial.html
 
 ## React란?
 React는 웹 페이지나 앱의 사용자 인터페이스(UI)를 만들기 위한 JavaScript 라이브러리입니다.   
@@ -26,7 +27,7 @@ React는 코드를 간결하고 이해하기 쉽게 만들어 줍니다.
 ## 환경 설정
 
 1. node.js Download (version: 18.17.1)   
-설치 완료 후 `npx -version` 명령어를 입력하면, `9.6.7` 버전을 사용중이라고 나온다.   
+설치 완료 후 `npx -version` 명령어를 입력하면, `9.6.7` 버전을 사용중이라고 나옵니다.    
 [Download Link](https://nodejs.org/en)
 
 2. `npx create-react-app my-app` 명령을 실행하여 기본 프로젝트를 생성합니다.
@@ -194,3 +195,125 @@ function WelcomeMessage(props) {
 <WelcomeMessage name="John" />
 ```
 위의 예에서 name="John"이라고 설정하면, WelcomeMessage 컴포넌트 내부의 props.name은 "John"이 됩니다. 결과적으로 화면에는 "Hello, John!"이 출력됩니다.
+
+---
+1. `/src/index.js` 파일의 Board 클래스를 아래와 같이 수정합니다.
+```javascript
+class Board extends React.Component {
+  renderSquare(i) {
+    return <Square value={i} />;
+  }
+}
+```
+
+2. `/src/index.js` 파일의 Square 클래스를 아래와 같이 수정합니다.
+```javascript
+class Square extends React.Component {
+  render() {
+    return (
+      <button className="square">
+        {this.props.value}
+      </button>
+    );
+  }
+}
+```
+[변경 전]
+![변경 전](/README_images/1.png)
+
+[변경 후]
+![변경 후](/README_images/2.png)
+
+위처럼 각 네모박스 내부에 0부터 8까지의 숫자가 출력되었습니다.
+저도 아직 정확하게 이해한 것은 아니지만, 제가 이해한 내용은 다음과 같습니다.
+
+1. index.html에서 `<div id="root"></div>` 태그에 의해 아래 코드가 실행됩니다.
+```javascript
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Game />);
+```
+2. Game 컴포넌트를 render 하기 때문에 `<div id="root">` 태그 내부에서 아래의 코드가 실행됩니다.
+```javascript
+class Game extends React.Component {
+    render() {
+        return (
+            <div className="game">
+                <div className="game-board">
+                    <Board />
+                </div>
+                <div className="game-info">
+                    <div>{/* status */}</div>
+                    <ol>{/* TODO */}</ol>
+                </div>
+            </div>
+        );
+    }
+}
+```
+3. Game 컴포넌트에서는 Board 컴포넌트를 다시 호출합니다.
+```javascript
+class Board extends React.Component {
+    renderSquare(i) {
+        return <Square value={i} />;
+    }
+
+    render() {
+        const status = 'Next player: X';
+
+        return (
+            <div>
+                <div className="status">{status}</div>
+                <div className="board-row">
+                    {this.renderSquare(0)}
+                    {this.renderSquare(1)}
+                    {this.renderSquare(2)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(3)}
+                    {this.renderSquare(4)}
+                    {this.renderSquare(5)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(6)}
+                    {this.renderSquare(7)}
+                    {this.renderSquare(8)}
+                </div>
+            </div>
+        );
+    }
+}
+```
+4. Board 컴포넌트에서는 `this.renderSquare(숫자)`를 통해 Sqaure 컴포넌트를 다시 호출합니다.
+```javascript
+class Square extends React.Component {
+    render() {
+        return (
+            <button className="square">
+                {this.props.value}
+            </button>
+        );
+    }
+}
+```
+
+위 과정을 통해 각 네모 박스에 0부터 8까지의 숫자가 담긴 네모 버튼이 생성된 것입니다.
+Jinja2, EJS 처럼 react에서도 for문을 통해 요소를 생성할 수 있다면, 더 간결한 코드로 작성할 수 있어 보입니다.   
+아직 이 부분은 튜토리얼에 없기 때문에 넘어가도록 하겠습니다.
+
+## 사용자와 상호작용하는 컴포넌트 만들기
+1. Square 컴포넌트를 클릭하면 `X`가 표시되도록 수정하려고 합니다.
+우선 button에 onclick 기능을 추가하여 console.log에 버튼이 클릭되었는지 로그로 남겨보겠습니다.
+```javascript
+// File Path to "/src/index.js"
+class Square extends React.Component {
+    render() {
+        return (
+            <button className="square" onClick={function(){console.log('click square');}}>
+                {this.props.value}
+            </button>
+        );
+    }
+}
+```
+위 코드에서 중요한 부분은 `onClick={function() { console.log('click square'); }}`가 아닌, `onClick={() => console.log('click square')}`형식으로 코드를 작성해야 한다는 점 입니다.   
+전자대로 코드를 작성한다면, 페이지를 새로고침 하더라도 console.log가 그대로 남아있게 되기 때문입니다.
